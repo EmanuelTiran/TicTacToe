@@ -1,20 +1,45 @@
-import React from 'react'
+import React, { useState } from 'react';
+
 import style from "./style.module.css"
-import Squre from '../Squre'
+import Square from '../Square'
 import X from '../X';
 import O from '../O';
 export default function Board() {
-    const squares = [];
+  const [isTurnX, setIsTurnX] = useState(true);
+  const [players, setPlayers] = useState(Array(9).fill(null));
 
-    for (let i = 0; i < 9; i++) {
-        i%2==0?
-      squares.push(<Squre key={i} player={<X/>} />):
-      squares.push(<Squre key={i} player={<O/>} />)
+  function checkWin(squares) {
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8], 
+      [2, 4, 6]  
+    ];
+
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (squares[a] && squares[a] === 'X' && squares[b] === 'X' && squares[c] === 'X') {
+        console.log("X win at cells:", a, b, c);
+      }
+      if (squares[a] && squares[a] === 'O' && squares[b] === 'O' && squares[c] === 'O') {
+        console.log("O win at cells:", a, b, c);
+      }
     }
-  
-    return (
-      <div className={style.board}>
-        {squares}
-      </div>
-    );
+
+    return null;
+  }
+
+  return (
+    <div className={style.board}>
+      {players.map((value, index) => (
+        <Square key={index} index={index} player={value} setPlayers={setPlayers} isTurnX={isTurnX} setIsTurnX={setIsTurnX} players={players}/>
+      ))}
+      <button onClick={() => checkWin(players)}>Check Win</button>
+    </div>
+  );
 }
+
