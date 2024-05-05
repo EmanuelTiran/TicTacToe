@@ -10,4 +10,6 @@
     grid-template-rows: repeat(3, 1fr);
     gap: 7px;
     padding:20px;
+    margin-left: auto;
+    margin-right: auto;
 }
