@@ -1,1 +1,1 @@
-{"players":[{"id":1,"name":"Player 1","symbol":"X"},{"id":2,"name":"Player 2","symbol":"O"}],"game_moves":["client","tiran","x","","","עמנורל","","","x"]}
+{"players":[{"id":1,"name":"Player 1","symbol":"X"},{"id":2,"name":"Player 2","symbol":"O"}],"game_moves":["","","","","","O","","","X"]}

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useContext } from 'react';
+import axios from 'axios';
 
 import DataContext from "../DataContext";
 
@@ -11,20 +12,15 @@ export default function Board() {
   const { pop } = useContext(DataContext);
 
   const [isTurnX, setIsTurnX] = useState(true);
+  // const [players, setPlayers] = useState([]);
   const [players, setPlayers] = useState(Array(9).fill(null));
-  
-    // useEffect(() => {
+
+  //   useEffect(() => {
   //   const fetchData = async () => {
   //     try {
-  //       const updatedData = {
-  //         game_moves: {
-  //           index: 0,
-  //           value: "client"
-  //         }
-  //       };
-
-  //       const response = await axios.post('http://localhost:3000/updateData', updatedData);
-  //       console.log(response.data);
+  //       const response = await axios.get('http://localhost:3000/gameData');
+  //       console.log("gameData:",response.data.game_moves);
+  //       setPlayers(response.data.game_moves)
   //       // setGameData(response.data);
   //       // setLoading(false);
   //     } catch (error) {
@@ -34,7 +30,7 @@ export default function Board() {
   //   };
 
   //   fetchData();
-  // }, [players[index]]);
+  // }, []);
 
   function checkWin(squares) {
     const lines = [

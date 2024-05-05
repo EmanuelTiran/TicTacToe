@@ -5,34 +5,27 @@ import X from '../X'
 import O from '../O'
 
 export default function Square({ index, player, setPlayers, isTurnX, setIsTurnX, players }) {
-  const [loading, setLoading] = useState(true);
-  const [gameData, setGameData] = useState([]);
   const [isMouseDown, setIsMouseDown] = useState(false);
 
+  const fetchData = async () => {
+    try {
+      const updatedData = {
+        game_moves: {
+          index: index,
+          value: isTurnX?'X':'O'
+        }
+      };
+
+      const response = await axios.post('http://localhost:3000/updateData', updatedData);
+      console.log(response.data.game_moves);
+      // setPlayers(response.data.game_moves)        
+    } catch (error) {
+      console.error('Error fetching game data:', error);
+      // setLoading(false);
+    }
+  };
 
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const updatedData = {
-  //         game_moves: {
-  //           index: 0,
-  //           value: "client"
-  //         }
-  //       };
-
-  //       const response = await axios.post('http://localhost:3000/updateData', updatedData);
-  //       console.log(response.data);
-  //       // setGameData(response.data);
-  //       // setLoading(false);
-  //     } catch (error) {
-  //       console.error('Error fetching game data:', error);
-  //       // setLoading(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [players[index]]);
 
   const releaseSquare = () => {
     setIsMouseDown(false);
@@ -46,6 +39,7 @@ export default function Square({ index, player, setPlayers, isTurnX, setIsTurnX,
       setPlayers(newPlayers);
       setIsTurnX(!isTurnX);
       setIsMouseDown(true);
+      fetchData();
     }
   }
   useEffect(() => {
