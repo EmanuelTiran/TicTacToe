@@ -9,6 +9,7 @@ import O from '../O'
 export default function Square({ index, setSymbols, symbols }) {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const { setText, setOpen } = useContext(DataContext);
+  const [playAgain, setPlayAgain] = useState(false);
 
 
   const fetchData = async () => {
