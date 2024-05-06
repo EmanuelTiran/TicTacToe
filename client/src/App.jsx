@@ -6,17 +6,19 @@ import './App.css'
 import Board from './components/Board'
 import DataContext from './components/DataContext';
 import Btn from './components/Btn';
+import Popup from './components/Popup';
 
 function App() {
-  const [pop, setPop] = useState();
-
+  const [text, setText] = useState("meir");
+  const [open, setOpen] = useState(false);
   return (
     <>
-      <DataContext.Provider value={{ pop }}>
+      <DataContext.Provider value={{ text, setText, open, setOpen }}>
         <Board />
-        <Btn value={"solo"}/>
+        <Btn value={"solo"} />
+        <Popup />
       </DataContext.Provider>
-      
+
     </>
   )
 }
