@@ -15,7 +15,7 @@ function App() {
     <>
       <DataContext.Provider value={{ text, setText, open, setOpen }}>
         <Board />
-        <Btn value={"solo"} />
+        <Btn value={"play again"} />
         <Popup />
       </DataContext.Provider>
 
