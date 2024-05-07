@@ -22,13 +22,15 @@ export default function Board() {
       console.error("Error fetching data: ", error?.response);
     }
   }
-  return (
+  return (<div className={style.boardGame}>
     <div className={style.board}>
       {symbols && symbols.map((value, index) => (
         <Square key={index} index={index} setSymbols={setSymbols} symbols={symbols} />
       ))}
-      {playAgain && <div onClick={newGame}><Btn value={"play again"}/></div>}
     </div>
+      
+      {playAgain && <div onClick={newGame}><Btn value={"play again"}/></div>}
+      </div>
   );
 }
 
