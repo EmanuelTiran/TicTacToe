@@ -1,68 +1,33 @@
-import React, { useState,useEffect } from 'react';
-import { useContext } from 'react';
-import axios from 'axios';
-
-import DataContext from "../DataContext";
+import { useContext, useState } from 'react';
 
 import style from "./style.module.css"
 import Square from '../Square'
-import X from '../X';
-import O from '../O';
+import Btn from '../Btn';
+import { axiosReq } from '../apiReq'
+
 export default function Board() {
-  const { pop } = useContext(DataContext);
+  const [symbols, setSymbols] = useState(Array(9).fill(''));
+  const [playAgain, setPlayAgain] = useState(true);
 
-  const [isTurnX, setIsTurnX] = useState(true);
-  // const [players, setPlayers] = useState([]);
-  const [players, setPlayers] = useState(Array(9).fill(null));
+  const players = Array(9).fill(null);
+  const newGame = async () => {
+    try {
 
-  //   useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('http://localhost:3000/gameData');
-  //       console.log("gameData:",response.data.game_moves);
-  //       setPlayers(response.data.game_moves)
-  //       // setGameData(response.data);
-  //       // setLoading(false);
-  //     } catch (error) {
-  //       console.error('Error fetching game data:', error);
-  //       // setLoading(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-  function checkWin(squares) {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6]
-    ];
-
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (squares[a] && squares[a].type?.name === 'X' && squares[b].type?.name === 'X' && squares[c].type?.name === 'X') {
-        console.log("X win at cells:", a, b, c);
-      }
-      if (squares[a] && squares[a].type?.name === 'O' && squares[b].type?.name === 'O' && squares[c].type?.name === 'O') {
-        console.log("O win at cells:", a, b, c);
-      }
+      const updatedData = await axiosReq({ method: 'post', url: `newGame` });
+      console.log(updatedData);
+      setSymbols(updatedData);
+      setPlayAgain(true)
+    } catch (error) {
+      console.log(error);
+      console.error("Error fetching data: ", error?.response);
     }
-
-    return null;
   }
-
   return (
     <div className={style.board}>
-      {players.map((value, index) => (
-        <Square key={index} index={index} player={value} setPlayers={setPlayers} isTurnX={isTurnX} setIsTurnX={setIsTurnX} players={players} />
+      {symbols && symbols.map((value, index) => (
+        <Square key={index} index={index} setSymbols={setSymbols} symbols={symbols} />
       ))}
-      <button onClick={() => checkWin(players)}>Check Win</button>
+      {playAgain && <div onClick={newGame}><Btn value={"play again"}/></div>}
     </div>
   );
 }

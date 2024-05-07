@@ -1,57 +1,58 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios';
+import React, { useState, useContext } from 'react'
 import style from "./style.module.css"
+import DataContext from "../DataContext";
+
+import { axiosReq } from '../apiReq'
 import X from '../X'
 import O from '../O'
 
-export default function Square({ index, player, setPlayers, isTurnX, setIsTurnX, players }) {
+export default function Square({ index, setSymbols, symbols }) {
   const [isMouseDown, setIsMouseDown] = useState(false);
+  const { setText, setOpen } = useContext(DataContext);
+  const [playAgain, setPlayAgain] = useState(false);
+
 
   const fetchData = async () => {
     try {
-      const updatedData = {
-        game_moves: {
-          index: index,
-          value: isTurnX?'X':'O'
-        }
+      const isTurnX = await axiosReq({ url: `isTurnX` })
+      const gameMoves = {
+        index: index,
+        value: isTurnX ? 'X' : 'O'
       };
+      const updatedData = await axiosReq({ method: 'post', url: `updateData`, body: gameMoves });
+      if (Array.isArray(updatedData)) {
+        setSymbols(updatedData);
+      } else {
+        setSymbols(updatedData.gameMoves);
+        setOpen(true)
+        setText(updatedData.win)
+      }
 
-      const response = await axios.post('http://localhost:3000/updateData', updatedData);
-      console.log(response.data.game_moves);
-      // setPlayers(response.data.game_moves)        
+      console.log(updatedData);
     } catch (error) {
-      console.error('Error fetching game data:', error);
-      // setLoading(false);
+      console.error("Error fetching data: ", error?.response);
     }
   };
 
 
+  function fillSquare() {
+    if (!symbols[index]) {
+      setIsMouseDown(true);
+      fetchData();
+    }
+  }
 
   const releaseSquare = () => {
     setIsMouseDown(false);
   };
 
-  function fillSquare() {
-    if (!player) {
-      const newPlayer = isTurnX ? <X /> : <O />;
-      const newPlayers = [...players];
-      newPlayers[index] = newPlayer;
-      setPlayers(newPlayers);
-      setIsTurnX(!isTurnX);
-      setIsMouseDown(true);
-      fetchData();
-    }
-  }
-  useEffect(() => {
-    console.log(players[index]?.type?.name);
-  }, [players[index]])
 
   return (
     <div className={`${style.square} ${isMouseDown ? style.noBoxShadow : ''}`}
       onMouseDown={fillSquare}
       onMouseUp={releaseSquare}
     >
-      {player}
+      {symbols[index] === '' ? null : (symbols[index] === 'X' ? <X /> : <O />)}
     </div>
   );
 }

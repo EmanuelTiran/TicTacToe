@@ -1,1 +1,1 @@
-{"players":[{"id":1,"name":"Player 1","symbol":"X"},{"id":2,"name":"Player 2","symbol":"O"}],"game_moves":["","","X","O","X","O","X","O","X"]}
+{"players":[{"id":1,"name":"Player 1","symbol":"X"},{"id":2,"name":"Player 2","symbol":"O"}],"gameMoves":["","X","","O","X","O","X","X","O"],"step":188}

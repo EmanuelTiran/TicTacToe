@@ -1,4 +1,5 @@
 const express = require('express');
+const { readData, checkWin, isTurnX } = require('./function');
 const fs = require('fs');
 const app = express();
 const cors = require("cors");
@@ -6,62 +7,66 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-
+6+
 app.get('/gameData', (req, res) => {
-    fs.readFile('gameData.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
+
+    try {
+        const data = readData('gameData.json');
         res.json(JSON.parse(data));
-    });
+
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+
 });
 
+app.get('/isTurnX', (req, res) => {
+
+    try {
+        res.send(isTurnX());
+
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+
+});
 
 app.post('/updateData', (req, res) => {
+    let { players } = req.body || {};
+    let { index, value } = req.body || {};
 
-    let { players } = req.body.players || {};
+    try {
+        const data = JSON.parse(readData('gameData.json'));
 
-    let { index, value } = req.body.game_moves;
-
-    fs.readFile('gameData.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
-
-        let gameData;
-        if (data != {}) {
-            gameData = JSON.parse(data);
-
-        }
-        // עדכון שמות השחקנים
+        //עדכון שמות השחקנים
         if (players) {
-            gameData.players[0].name = players.name1;
-            gameData.players[1].name = players.name2;
+            data.players[0].name = players.name1;
+            data.players[1].name = players.name2;
         }
 
-        //עדכון מהלך  
-        if (index) {
-            gameData.game_moves[index] = value;
+        //עדכון מהלך וצעדים
+        if (index !== undefined && index !== null && value) {
+            data.gameMoves[index] = value;
+            data.step++;
         }
-
 
         // כתיבת הנתונים חזרה לקובץ
-        fs.writeFile('gameData.json', JSON.stringify(gameData), err => {
-            if (err) {
-                console.error(err);
-                res.status(500).send('Internal Server Error');
-                return;
-            }
-            res.send(gameData).status(200);
-            console.log('JSON.parse(data)', gameData);
-        });
+        fs.writeFileSync('gameData.json', JSON.stringify(data));
+        const win = checkWin()
+        const updatedData = JSON.parse(readData('gameData.json'))
+        const { step, gameMoves } = updatedData
+        let result = win ? { win, step ,gameMoves } : gameMoves
 
-    });
+        res.send(result).status(200);
+    } catch (error) {
+        console.log({ error });
+        res.status(500).send('Internal Server Error');
+    }
+
 });
+
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

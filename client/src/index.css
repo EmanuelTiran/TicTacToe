@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
-*{
+* {
   padding: 0;
   margin: 0%;
   box-sizing: border-box;
@@ -9,31 +9,36 @@
   font-style: normal;
 }
 
-body{
-  
-/* display: flex;
+
+
+body {
+
+  /* display: flex;
 align-items: center;
 justify-content: center; */
 }
 
-button{
+button {
   border: none;
 }
 
-a, input, select,button{
+a,
+input,
+select,
+button {
   font: inherit;
   text-decoration: none;
 }
-a{
+
+a {
   text-emphasis: none;
   color: inherit;
 }
 
-:root{
-  --title-color:#071232;
-  --text-color:#f5f5f5;
+:root {
+  --title-color: #071232;
+  --text-color: #f5f5f5;
   /* --prmary-color:#004eb5; */
-  --primary-color:#00A389;
-  --gray-bd-color:#A2AAB4;
+  --primary-color: #00A389;
+  --gray-bd-color: #A2AAB4;
 }
-
