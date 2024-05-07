@@ -3,8 +3,9 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
+    padding: 25px;
 
 }
 
