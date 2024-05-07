@@ -7,7 +7,6 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-6+
 app.get('/gameData', (req, res) => {
 
     try {
@@ -15,10 +14,12 @@ app.get('/gameData', (req, res) => {
         res.json(JSON.parse(data));
 
     } catch (error) {
+        console.log({ error });
         res.status(500).send('Internal Server Error');
     }
 
 });
+
 
 app.get('/isTurnX', (req, res) => {
 
@@ -26,10 +27,27 @@ app.get('/isTurnX', (req, res) => {
         res.send(isTurnX());
 
     } catch (error) {
+        console.log({ error });
         res.status(500).send('Internal Server Error');
     }
 
 });
+
+app.post('/newGame', (req, res) => {
+    try {
+        let data = readData('gameData.json');
+        data = JSON.parse(data);
+        data.gameMoves = ["", "", "", "", "", "", "", "", ""]
+        fs.writeFileSync('gameData.json', JSON.stringify(data));
+        const updatedData = JSON.parse(readData('gameData.json'))
+        const {  gameMoves } = updatedData
+        res.send(gameMoves);
+    } catch (error) {
+        console.log({ error });
+        res.status(500).send('Internal Server Error');
+    }
+
+})
 
 app.post('/updateData', (req, res) => {
     let { players } = req.body || {};
@@ -55,7 +73,7 @@ app.post('/updateData', (req, res) => {
         const win = checkWin()
         const updatedData = JSON.parse(readData('gameData.json'))
         const { step, gameMoves } = updatedData
-        let result = win ? { win, step ,gameMoves } : gameMoves
+        let result = win ? { win, step, gameMoves } : gameMoves
 
         res.send(result).status(200);
     } catch (error) {

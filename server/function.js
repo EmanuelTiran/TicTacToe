@@ -23,14 +23,10 @@ function checkWin() {
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (gameMoves[a] && gameMoves[a] === 'X' && gameMoves[b] === 'X' && gameMoves[c] === 'X') {
-            // data.gameMoves =  ["","","","","","","","",""]
-            // fs.writeFileSync('gameData.json', JSON.stringify(data));
             return `X win at cells: ${a.toString()}, ${b.toString()}, ${c.toString()}`;
 
         }
         if (gameMoves[a] && gameMoves[a] === 'O' && gameMoves[b] === 'O' && gameMoves[c] === 'O') {
-            // data.gameMoves =  ["","","","","","","","",""]
-            // fs.writeFileSync('gameData.json', JSON.stringify(data));
             return `O win at cells: ${a.toString()}, ${b.toString()}, ${c.toString()}`;
 
         }
