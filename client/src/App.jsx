@@ -10,7 +10,7 @@ import Btn from './components/Btn';
 import Menu from './components/Menu';
 import Popup from './components/Popup';
 import Welcome from './components/Welcome';
-import JoinGame from './components/JoinGame';
+import JoinGame from './components/JoinGame.jsx';
 
 export default function App() {
   const [text, setText] = useState();
@@ -37,8 +37,8 @@ export default function App() {
       </DataContext.Provider>
       {/* <JoinGame /> */}
       {/* <Menu /> */}
-      {/* <Welcome/> */}
       {/* <RouterProvider router={router} /> */}
+      {/* <JoinGame/> */}
 
     </>
   )

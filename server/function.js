@@ -1,10 +1,6 @@
-const fs = require('fs');
+const { readOneGame} = require('./Db/controller');
 
-const readData = (path) => {
-    return fs.readFileSync(path, 'utf8');
-}
-
-function checkWin() {
+function checkWin(filePath,id) {
     const lines = [
         [0, 1, 2],
         [3, 4, 5],
@@ -15,28 +11,25 @@ function checkWin() {
         [0, 4, 8],
         [2, 4, 6]
     ];
-    let data = readData('gameData.json');
-    data = JSON.parse(data);
-    let { gameMoves } = data;
+    let data = readOneGame(filePath,id);
+    let { gameMoves, step } = data;
 
 
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
-        if (gameMoves[a] && gameMoves[a] === 'X' && gameMoves[b] === 'X' && gameMoves[c] === 'X') {
-            return `X win at cells: ${a.toString()}, ${b.toString()}, ${c.toString()}`;
+        if ( gameMoves[a] === 'X' && gameMoves[b] === 'X' && gameMoves[c] === 'X') {
+            return `X win at cells: ${a.toString()}, ${b.toString()}, ${c.toString()}  ${step.toString()}`;
 
         }
-        if (gameMoves[a] && gameMoves[a] === 'O' && gameMoves[b] === 'O' && gameMoves[c] === 'O') {
-            return `O win at cells: ${a.toString()}, ${b.toString()}, ${c.toString()}`;
+        if (gameMoves[a] === 'O' && gameMoves[b] === 'O' && gameMoves[c] === 'O') {
+            return `O win at cells: ${a.toString()}, ${b.toString()}, ${c.toString()} ${step.toString()}`;
 
         }
     }
 }
-const isTurnX = () => {
-    let data = readData('gameData.json');
-    data = JSON.parse(data);
-    const { step } = data;
+const isTurnX = (filePath,id) => {
+    let step = readOneGame(filePath,id)['step'];
     return step % 2 == 0;
 }
 
-module.exports = { readData, checkWin, isTurnX };
+module.exports = { checkWin, isTurnX };
