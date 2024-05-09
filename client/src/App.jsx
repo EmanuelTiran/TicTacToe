@@ -10,6 +10,7 @@ import Btn from './components/Btn';
 import Menu from './components/Menu';
 import Popup from './components/Popup';
 import Welcome from './components/Welcome';
+import JoinGame from './components/JoinGame';
 
 export default function App() {
   const [text, setText] = useState();
@@ -17,11 +18,11 @@ export default function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element:  <Board />,
+      element: <Board />,
     },
     {
       path: "chooseplayer",
-      element: <Menu/>,
+      element: <Menu />,
     },
     {
       path: "playboard",
@@ -30,10 +31,11 @@ export default function App() {
   ]);
   return (
     <>
-      <DataContext.Provider value={{ text, setText, open, setOpen }}>
+      {/* <DataContext.Provider value={{ text, setText, open, setOpen }}>
         <Board />
         <Popup />
-      </DataContext.Provider>
+      </DataContext.Provider> */}
+      <JoinGame />
       {/* <Menu /> */}
       {/* <Welcome/> */}
       {/* <RouterProvider router={router} /> */}
