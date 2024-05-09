@@ -1,9 +1,4 @@
-const fs = require('fs');
-const filePath = './DB/gameData.json';
-
 const { readOneGame} = require('./Db/controller');
-
-
 
 function checkWin(filePath,id) {
     const lines = [

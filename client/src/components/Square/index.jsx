@@ -13,12 +13,12 @@ export default function Square({ index, setSymbols, symbols , setPlayAgain}) {
 
   const fetchData = async () => {
     try {
-      const isTurnX = await axiosReq({ url: `isTurnX` })
+      const isTurnX = await axiosReq({ url: `isTurnX/45` })
       const gameMoves = {
         index: index,
         value: isTurnX ? 'X' : 'O'
       };
-      const updatedData = await axiosReq({ method: 'post', url: `updateData`, body: gameMoves });
+      const updatedData = await axiosReq({ method: 'post', url: `updateData/45`, body: gameMoves });
       if (Array.isArray(updatedData)) {
         setSymbols(updatedData);
       } else {

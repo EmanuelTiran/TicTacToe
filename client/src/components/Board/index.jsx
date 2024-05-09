@@ -18,7 +18,7 @@ export default function Board() {
   const newGame = async () => {
     try {
 
-      const updatedData = await axiosReq({ method: 'post', url: `newGame` });
+      const updatedData = await axiosReq({ method: 'post', url: `newGame/45` });
       console.log(updatedData);
       setSymbols(updatedData);
       setPlayAgain(false)

@@ -33,5 +33,4 @@ const createGame = (path, id, name) => {
 }
 
 
-
 module.exports = { readOneGame, writeData, updateData, createGame };
