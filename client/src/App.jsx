@@ -18,11 +18,11 @@ export default function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element:  <Board />,
+      element: <Board />,
     },
     {
       path: "chooseplayer",
-      element: <Menu/>,
+      element: <Menu />,
     },
     {
       path: "playboard",
@@ -35,6 +35,7 @@ export default function App() {
         <Board />
         <Popup />
       </DataContext.Provider>
+      {/* <JoinGame /> */}
       {/* <Menu /> */}
       {/* <RouterProvider router={router} /> */}
       {/* <JoinGame/> */}
