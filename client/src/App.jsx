@@ -18,7 +18,7 @@ export default function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element:  <Welcome />,
+      element:  <Board />,
     },
     {
       path: "chooseplayer",

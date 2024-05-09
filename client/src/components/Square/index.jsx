@@ -6,10 +6,9 @@ import { axiosReq } from '../apiReq'
 import X from '../X'
 import O from '../O'
 
-export default function Square({ index, setSymbols, symbols }) {
+export default function Square({ index, setSymbols, symbols , setPlayAgain}) {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const { setText, setOpen } = useContext(DataContext);
-  const [playAgain, setPlayAgain] = useState(false);
 
 
   const fetchData = async () => {
@@ -23,6 +22,7 @@ export default function Square({ index, setSymbols, symbols }) {
       if (Array.isArray(updatedData)) {
         setSymbols(updatedData);
       } else {
+        setPlayAgain(true)
         setSymbols(updatedData.gameMoves);
         setOpen(true)
         setText(updatedData.win)
