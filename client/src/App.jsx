@@ -31,11 +31,11 @@ export default function App() {
   ]);
   return (
     <>
-      {/* <DataContext.Provider value={{ text, setText, open, setOpen }}>
+      <DataContext.Provider value={{ text, setText, open, setOpen }}>
         <Board />
         <Popup />
-      </DataContext.Provider> */}
-      <JoinGame />
+      </DataContext.Provider>
+      {/* <JoinGame /> */}
       {/* <Menu /> */}
       {/* <Welcome/> */}
       {/* <RouterProvider router={router} /> */}
