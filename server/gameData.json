@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-{"players":[{"id":1,"name":"Player 1","symbol":"X"},{"id":2,"name":"Player 2","symbol":"O"}],"gameMoves":["","","","","","","","",""],"step":240}
-=======
-{"players":[{"id":1,"name":"Player 1","symbol":"X"},{"id":2,"name":"Player 2","symbol":"O"}],"gameMoves":["","X","","O","X","O","X","X","O"],"step":188}
->>>>>>> 4afd1bb0f1cb0432e55617536b900e14bc011cd6
