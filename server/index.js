@@ -12,19 +12,33 @@ app.use(cors());
 
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: '*', mehodes: '*' } });
+const newGame = {
+    "players": [
+        { "socketId": '', "name": "player 1", "symbol": "X" },
+        { "socketId": '', "name": "Player 2", "symbol": "O" }
+    ],
+    "gameMoves": ["", "", "", "", "", "", "", "", ""],
+    "step": 0
+};
 
 io.on('connection', socket => {
 
     socket.on('createGame', () => {
-        console.log(socket.id)
-
-        socket.join('123456')
-        socket.emit('numRoom','123456')
+        newGame.players[0].socketId = socket.id;
+        console.log(newGame);
+        socket.join(45)
+        socket.emit('numRoom', { roomId: 45, socketId: socket.id })
     })
-    
+
     socket.on('joinGame', (roomNum) => {
+        newGame.players[1].socketId = socket.id;
         socket.join(roomNum)
-        socket.emit('checkRoom',true)
+        socket.emit('checkRoom', true)
+    })
+
+    socket.on('updateData', ({ index, socketId }) => {
+        newGame.gameMoves[index] = newGame.players[0].socketId === socketId ? 'X' : 'O'
+        io.to(45).emit('updated', newGame.gameMoves)
     })
 })
 

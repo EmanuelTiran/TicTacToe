@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Btn from '../Btn';
 import style from "./style.module.css"
 import { IoReturnUpBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import useSocket from '../../socket';
+import DataContext from '../DataContext';
+
 
 
 export default function JoinGame() {
+    const { setPlayer } = useContext(DataContext);
+
     const [inputValue, setInputValue] = useState('');
     const navigate = useNavigate();
 
@@ -20,11 +24,9 @@ export default function JoinGame() {
     };
     const handleCreateGame = () => {
         socket.emit('createGame')
-        socket.on('numRoom', (numRoom) => {
-            alert(socket.id)
-            alert(numRoom)
+        socket.on('numRoom', ({ roomId, socketId }) => {
+            setPlayer(prev => ({ ...prev, roomId, socketId }));
         })
-
     };
 
     return (
