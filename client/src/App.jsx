@@ -11,6 +11,7 @@ import Menu from './components/Menu';
 import Popup from './components/Popup';
 import Welcome from './components/Welcome';
 import JoinGame from './components/JoinGame.jsx';
+import ChoiceSymbol from './components/choiceSymbol/index.jsx';
 
 export default function App() {
   const [text, setText] = useState();
@@ -34,6 +35,7 @@ export default function App() {
       <DataContext.Provider value={{ text, setText, open, setOpen }}>
         <Board />
         <Popup />
+        {/* <ChoiceSymbol/> */}
       </DataContext.Provider>
       {/* <JoinGame /> */}
       {/* <Menu /> */}
