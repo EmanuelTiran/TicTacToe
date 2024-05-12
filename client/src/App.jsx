@@ -12,6 +12,7 @@ import Popup from './components/Popup';
 import Welcome from './components/Welcome';
 import JoinGame from './components/JoinGame.jsx';
 import ChoiceSymbol from './components/choiceSymbol/index.jsx';
+import { SocketProvider } from './socket.jsx';
 
 export default function App() {
   const [text, setText] = useState();
@@ -19,27 +20,39 @@ export default function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Board />,
+      element: <Welcome />,
     },
     {
-      path: "chooseplayer",
+      path: "menu",
       element: <Menu />,
     },
     {
+      path: "joinGame",
+      element: <JoinGame />,
+    },
+    {
       path: "playboard",
-      element: <h1>"playboard"</h1>,
+      element: <Board/>
     },
   ]);
+
+
+
+
   return (
     <>
-      <DataContext.Provider value={{ text, setText, open, setOpen }}>
-        <Board />
+      <SocketProvider>
+
+        <DataContext.Provider value={{ text, setText, open, setOpen }}>
+          {/* <Board /> */}
+      <RouterProvider router={router} />
         <Popup />
-        {/* <ChoiceSymbol/> */}
-      </DataContext.Provider>
+          {/* <ChoiceSymbol /> */}
+        </DataContext.Provider>
+      </SocketProvider>
+
       {/* <JoinGame /> */}
       {/* <Menu /> */}
-      {/* <RouterProvider router={router} /> */}
       {/* <JoinGame/> */}
 
     </>

@@ -1,20 +1,22 @@
 import React from 'react'
 import style from "./style.module.css"
 import Btn from '../Btn'
-import X from '../X'
-import O from '../O'
+
+import { useNavigate } from "react-router-dom";
 
 export default function Menu() {
+    const navigate = useNavigate();
+
     return (
+
         <div className={style.menu}>
             <img className={style.img} src="/img/LogoSmall.svg" alt="" />
-            {/* <O id={style.blurO}/>
-            <O className={style.blurO}/>
-            <X className={style.blurX}/>
-            <X className={style.regularO}/> */}
             <div className={style.btns}>
                 <Btn value={"play solo"} />
-                <Btn value={"play with a friend"} />
+                <div
+                    onClick={() => navigate("/joinGame")}
+
+                > <Btn value={"play with a friend"} /></div>
             </div>
         </div>
     )

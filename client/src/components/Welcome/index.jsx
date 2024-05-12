@@ -8,8 +8,8 @@ export default function Welcome() {
   const navigate = useNavigate();
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("chooseplayer");
-    }, 5000);
+      navigate("menu");
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);
