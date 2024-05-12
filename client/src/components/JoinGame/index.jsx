@@ -2,29 +2,41 @@ import { useState } from 'react';
 import Btn from '../Btn';
 import style from "./style.module.css"
 import { IoReturnUpBack } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import useSocket from '../../socket';
+
 
 export default function JoinGame() {
     const [inputValue, setInputValue] = useState('');
+    const navigate = useNavigate();
+
+    const socket = useSocket()
 
     const handleJoinClick = () => {
-        console.log(inputValue);
-        setInputValue(inputValue); // Update the state with the current input value
+        socket.emit('joinGame', inputValue);
+        socket.on('checkRoom', flag => {
+            flag ? navigate('/board') : alert("roomm is not avaiable")
+        })
     };
     const handleCreateGame = () => {
-        console.log("");
-        setInputValue(inputValue); // Update the state with the current input value
+        socket.emit('createGame')
+        socket.on('numRoom', (numRoom) => {
+            alert(socket.id)
+            alert(numRoom)
+        })
+
     };
 
     return (
         <div className={style.joinGame}>
             <div className={style.sqr}>
-                <IoReturnUpBack/>
+                <IoReturnUpBack />
             </div>
             join to a game
             <input
                 className={style.input}
                 placeholder='enter code game'
-                type="text"
+                type="number"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
             />

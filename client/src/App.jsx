@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
-import { useContext } from 'react';
 
 import './App.css'
 import Board from './components/Board'
 import DataContext from './components/DataContext';
-import Btn from './components/Btn';
 import Menu from './components/Menu';
 import Popup from './components/Popup';
 import Welcome from './components/Welcome';
-import JoinGame from './components/JoinGame.jsx';
+import JoinGame from './components/JoinGame';
 import ChoiceSymbol from './components/choiceSymbol/index.jsx';
 import { SocketProvider } from './socket.jsx';
 
@@ -31,8 +29,8 @@ export default function App() {
       element: <JoinGame />,
     },
     {
-      path: "playboard",
-      element: <Board/>
+      path: "board",
+      element: <Board />
     },
   ]);
 
@@ -42,19 +40,11 @@ export default function App() {
   return (
     <>
       <SocketProvider>
-
         <DataContext.Provider value={{ text, setText, open, setOpen }}>
-          {/* <Board /> */}
-      <RouterProvider router={router} />
-        <Popup />
-          {/* <ChoiceSymbol /> */}
+          <RouterProvider router={router} />
+          <Popup />
         </DataContext.Provider>
       </SocketProvider>
-
-      {/* <JoinGame /> */}
-      {/* <Menu /> */}
-      {/* <JoinGame/> */}
-
     </>
   )
 }

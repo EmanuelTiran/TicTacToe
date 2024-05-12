@@ -1,13 +1,34 @@
-const express = require('express');
-const app = express();
-const cors = require("cors");
+const express = require('express'),
+    app = express(),
+    { createServer } = require('http'),
+    { Server } = require("socket.io")
+cors = require("cors");
 
 const { checkWin, isTurnX } = require('./function');
 const { readOneGame, updateData } = require('./Db/controller');
-
 const filePath = './DB/gameData.json';
 
 app.use(cors());
+
+const server = createServer(app);
+const io = new Server(server, { cors: { origin: '*', mehodes: '*' } });
+
+io.on('connection', socket => {
+
+    socket.on('createGame', () => {
+        console.log(socket.id)
+
+        socket.join('123456')
+        socket.emit('numRoom','123456')
+    })
+    
+    socket.on('joinGame', (roomNum) => {
+        socket.join(roomNum)
+        socket.emit('checkRoom',true)
+    })
+})
+
+
 app.use(express.json());
 
 app.get('/gameData/:id', (req, res) => {
@@ -85,6 +106,6 @@ app.post('/updateData/:id', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
