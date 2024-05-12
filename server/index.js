@@ -5,40 +5,37 @@ const express = require('express'),
 cors = require("cors");
 
 const { checkWin, isTurnX } = require('./function');
-const { readOneGame, updateData } = require('./Db/controller');
+const { readOneGame, updateData, createGame, lastRoomId } = require('./Db/controller');
 const filePath = './DB/gameData.json';
 
 app.use(cors());
 
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: '*', mehodes: '*' } });
-const newGame = {
-    "players": [
-        { "socketId": '', "name": "player 1", "symbol": "X" },
-        { "socketId": '', "name": "Player 2", "symbol": "O" }
-    ],
-    "gameMoves": ["", "", "", "", "", "", "", "", ""],
-    "step": 0
-};
 
 io.on('connection', socket => {
 
-    socket.on('createGame', () => {
-        newGame.players[0].socketId = socket.id;
-        console.log(newGame);
-        socket.join(45)
-        socket.emit('numRoom', { roomId: 45, socketId: socket.id })
+    socket.on('createGame', (name) => {
+        let newRoomId = lastRoomId(filePath);
+        newRoomId++
+        createGame(filePath, newRoomId, name, socket.id)
+        socket.join(newRoomId)
+        socket.emit('numRoom', { roomId: newRoomId, socketId: socket.id })
     })
 
-    socket.on('joinGame', (roomNum) => {
-        newGame.players[1].socketId = socket.id;
-        socket.join(roomNum)
+    socket.on('joinGame', (id) => {
+        let data = readOneGame(filePath, id)
+        console.log(data)
+        data['players'][1]['socketId'] = socket.id;
+        socket.join(id)
+        updateData(filePath, id, "socketId", data.socketId)
+
         socket.emit('checkRoom', true)
     })
 
     socket.on('updateData', ({ index, socketId }) => {
         newGame.gameMoves[index] = newGame.players[0].socketId === socketId ? 'X' : 'O'
-        io.to(45).emit('updated', newGame.gameMoves)
+        io.to(newRoomId).emit('updated', newGame.gameMoves)
     })
 })
 

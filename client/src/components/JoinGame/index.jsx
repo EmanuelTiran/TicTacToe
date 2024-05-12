@@ -28,7 +28,7 @@ export default function JoinGame() {
             setPlayer(prev => ({ ...prev, roomId, socketId }));
         })
     };
-
+cd 
     return (
         <div className={style.joinGame}>
             <div className={style.sqr}>
