@@ -4,9 +4,14 @@ const readData = (path) => JSON.parse(fs.readFileSync(path, 'utf8'));
 
 const readOneGame = (path, id) => readData(path)[id];
 
-const lastRoomId = (path) => {
-    const keys = Object.keys(readData(path));
-    return keys[keys.length - 1];
+const roomIds = (path) => Object.keys(readData(path));
+
+const newRoomId = (path) => {
+    let number;
+    do {
+        number = Math.floor(100000 + Math.random() * 900000);
+    } while (roomIds(path).includes(number.toString()));
+    return number;
 };
 
 const writeData = (path, data) => {
@@ -14,16 +19,17 @@ const writeData = (path, data) => {
     return readData(path);
 };
 
-const updateData = (path, id, field, newData) => {
+const updateData = (path, id, field, newData, index = 0) => {
     let data = readData(path);
-    // field === 'players' ?
-    //     data[id][field][1]['name'] = newData : data[id][field] = newData;
-    field === 'socketId' ?
-        data[id]['players'][1]['socketId'] = newData : data[id][field] = newData;
-    return writeData(path, data)[id][field];
+    if (field === 'socketId' || field === 'name' || field === 'avatar' || field === 'numberVictories') {
+        data[id]['players'][index][field] = newData
+        return { [field]: writeData(path, data)[id]['players'][index][field] };
+    }
+    data[id][field] = newData;
+    return { [field]: writeData(path, data)[id][field] };
 }
 
-const createGame = (path, id, name ,socketId) => {
+const createGame = (path, id, name = 'Player 1', socketId) => {
 
     const newGame = {
         "players": [
@@ -39,4 +45,4 @@ const createGame = (path, id, name ,socketId) => {
 
 }
 
-module.exports = { readOneGame, writeData, updateData, createGame, lastRoomId };
+module.exports = { readOneGame, writeData, updateData, createGame, newRoomId, roomIds };

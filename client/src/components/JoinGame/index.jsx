@@ -7,7 +7,6 @@ import useSocket from '../../socket';
 import DataContext from '../DataContext';
 
 
-
 export default function JoinGame() {
     const { setPlayer } = useContext(DataContext);
 
@@ -18,8 +17,13 @@ export default function JoinGame() {
 
     const handleJoinClick = () => {
         socket.emit('joinGame', inputValue);
-        socket.on('checkRoom', flag => {
-            flag ? navigate('/board') : alert("roomm is not avaiable")
+        socket.on('checkRoom', ({ flag, roomId, socketId }) => {
+            if (flag) {
+                navigate('/board')
+                setPlayer(prev => ({ ...prev, roomId, socketId }));
+
+            }
+            else alert("roomm is not avaiable")
         })
     };
     const handleCreateGame = () => {
@@ -28,7 +32,7 @@ export default function JoinGame() {
             setPlayer(prev => ({ ...prev, roomId, socketId }));
         })
     };
-cd 
+
     return (
         <div className={style.joinGame}>
             <div className={style.sqr}>

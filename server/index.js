@@ -5,7 +5,7 @@ const express = require('express'),
 cors = require("cors");
 
 const { checkWin, isTurnX } = require('./function');
-const { readOneGame, updateData, createGame, lastRoomId } = require('./Db/controller');
+const { readOneGame, updateData, createGame, newRoomId, roomIds } = require('./Db/controller');
 const filePath = './DB/gameData.json';
 
 app.use(cors());
@@ -16,26 +16,31 @@ const io = new Server(server, { cors: { origin: '*', mehodes: '*' } });
 io.on('connection', socket => {
 
     socket.on('createGame', (name) => {
-        let newRoomId = lastRoomId(filePath);
-        newRoomId++
-        createGame(filePath, newRoomId, name, socket.id)
-        socket.join(newRoomId)
-        socket.emit('numRoom', { roomId: newRoomId, socketId: socket.id })
+        let numRoom = newRoomId(filePath);
+        createGame(filePath, numRoom, name, socket.id)
+        socket.join(numRoom)
+        socket.emit('numRoom', { roomId: numRoom, socketId: socket.id })
     })
 
-    socket.on('joinGame', (id) => {
-        let data = readOneGame(filePath, id)
-        console.log(data)
-        data['players'][1]['socketId'] = socket.id;
-        socket.join(id)
-        updateData(filePath, id, "socketId", data.socketId)
-
-        socket.emit('checkRoom', true)
+    socket.on('joinGame', (numRoom) => {
+        const checkRoom = roomIds(filePath).includes(numRoom.toString())
+        if (checkRoom) {
+            let data = readOneGame(filePath, numRoom)
+            socket.join(numRoom);
+            if (data.players[0].socketId !== socket.id) {
+                updateData(filePath, numRoom, "socketId", socket.id, 1)
+            }
+        }
+        socket.emit('checkRoom', { flag: checkRoom, roomId: numRoom, socketId: socket.id })
     })
 
-    socket.on('updateData', ({ index, socketId }) => {
-        newGame.gameMoves[index] = newGame.players[0].socketId === socketId ? 'X' : 'O'
-        io.to(newRoomId).emit('updated', newGame.gameMoves)
+    socket.on('updateData', ({ index, socketId, numRoom }) => {
+        let data = readOneGame(filePath, numRoom)
+        data.gameMoves[index] = (data.players[0].socketId === socket.id ? 'X' : 'O')
+        const result = updateData(filePath, numRoom, "gameMoves", data.gameMoves)
+        updateData(filePath, numRoom, "step", ++data.step);
+        data = readOneGame(filePath, numRoom)
+        io.to(numRoom).emit('updated', data.gameMoves)
     })
 })
 

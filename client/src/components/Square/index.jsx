@@ -1,4 +1,4 @@
-import React, { useState, useContext ,useEffect} from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import style from "./style.module.css"
 import DataContext from "../DataContext";
 import useSocket from '../../socket';
@@ -12,8 +12,8 @@ export default function Square({ index, setSymbols, symbols, setPlayAgain }) {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const { setText, setOpen, player } = useContext(DataContext);
 
-  useEffect(()=>{
-    socket.on('updated',(updatedData)=>{
+  useEffect(() => {
+    socket.on('updated', (updatedData) => {
       console.log(updatedData);
       if (Array.isArray(updatedData)) {
         setSymbols(updatedData);
@@ -24,7 +24,7 @@ export default function Square({ index, setSymbols, symbols, setPlayAgain }) {
         setText(updatedData.win)
       }
     })
-  },[symbols])
+  }, [symbols])
 
   const fetchData = async () => {
     try {
@@ -35,8 +35,8 @@ export default function Square({ index, setSymbols, symbols, setPlayAgain }) {
       //   value: isTurnX ? 'X' : 'O'
       // };
       console.log(player);
-      socket.emit('updateData', {index, socketId: player.socketId});
-      socket.on('updated',(updatedData)=>{
+      socket.emit('updateData', { index, socketId: player.socketId, numRoom: player.roomId });
+      socket.on('updated', (updatedData) => {
         console.log(updatedData);
         if (Array.isArray(updatedData)) {
           setSymbols(updatedData);
@@ -49,7 +49,7 @@ export default function Square({ index, setSymbols, symbols, setPlayAgain }) {
       })
 
 
-   
+
       // const updatedData = await axiosReq({ method: 'post', url: `updateData/45`, body: gameMoves });
       // if (Array.isArray(updatedData)) {
       //   setSymbols(updatedData);
