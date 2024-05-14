@@ -12,7 +12,7 @@ export default function Popup() {
     };
 
     const handleInsideClick = (e) => {
-        e.stopPropagation(); // Prevent event bubbling
+        e.stopPropagation(); 
     };
 
     return (
