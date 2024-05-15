@@ -82,12 +82,12 @@ io.on('connection', socket => {
     socket.on('newGame', (numRoom) => {
         try {
             const result = newGame(filePath, numRoom)
-            io.to(numRoom).emit('updated', result)
+            io.to(numRoom).emit('updatedNew', result)
         } catch (error) {
             console.error(error);
             socket.emit('error', { message: error.message });
         }
-    })
+    })  
 
 })
 

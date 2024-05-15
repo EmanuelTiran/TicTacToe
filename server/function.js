@@ -1,4 +1,4 @@
-const { readOneGame } = require('./Db/controller');
+const { readOneGame, updateData } = require('./Db/controller');
 
 function checkWin(filePath, id) {
     const lines = [
@@ -47,9 +47,9 @@ const isValidJoin = (path, numRoom, socketId) => {
 
 const newGame = (path, numRoom) => {
     const newGame = ["", "", "", "", "", "", "", "", ""];
-    const gameMoves = updateData(path, numRoom, 'gameMoves', newGame);
-    const step = updateData(path, numRoom, "step", 0);
-    return { gameMoves, step };
+    updateData(path, numRoom.numRoom, "step", 0);
+    const gameMoves = updateData(path, numRoom.numRoom, 'gameMoves', newGame);
+    return gameMoves;
 }
 
 module.exports = { checkWin, isTurnX, isValidQueue, isValidJoin, newGame };

@@ -1,14 +1,22 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import DataContext from "../DataContext";
+
 
 import style from "./style.module.css"
 import Square from '../Square'
 import Btn from '../Btn';
+import useSocket from '../../socket';
+
 import { axiosReq } from '../apiReq'
 // import { useNavigate } from "react-router-dom";
 
 export default function Board() {
   const [symbols, setSymbols] = useState(Array(9).fill(''));
   const [playAgain, setPlayAgain] = useState(false);
+  const { player } = useContext(DataContext);
+  const socket = useSocket()
+
+
   // const navigate = useNavigate();
 
   const players = Array(9).fill(null);
@@ -17,28 +25,32 @@ export default function Board() {
   }
 
   const updatedGame = () => {
-    socket.on('updatedGame', ({ gameMoves, win }) => {
-        if (win) {
-          setPlayAgain(true)
-          setSymbols(gameMoves);
-          setOpen(true)
-          setText(win)
-        } else {
-          setSymbols(gameMoves);
-        }
+    socket.on('updatedNew', (result) => console.log('result', result));
+
+    socket.on('updatedNew',console.log('result'))
+    socket.on('updatedNew', ({gameMoves}) => {
+      console.log('object')
+
+        // if (win) {
+        //   setSymbols(gameMoves);
+        //   setPlayAgain(false)
+        // } else {
+        //   setSymbols(gameMoves);
+        // }
       })
   }
 
-  // useEffect(() => {
-  //   updated();
-  // }, [symbols])
+  useEffect(() => {
+    updatedGame();
+  }, [symbols])
 
   const newGame = async () => {
-
     try {
-      
+      socket.emit('newGame', {  numRoom: player.roomId });
+      updatedGame();
     } catch (error) {
-      
+      console.log(error);
+      console.error("Error fetching data: ", error?.response);
     }
     // try {
 
