@@ -4,7 +4,7 @@ const express = require('express'),
     { Server } = require("socket.io")
 cors = require("cors");
 
-const { checkWin, isTurnX } = require('./function');
+const { checkWin, isTurnX, isValidQueue } = require('./function');
 const { readOneGame, updateData, createGame, newRoomId, roomIds } = require('./Db/controller');
 const filePath = './DB/gameData.json';
 
@@ -62,9 +62,7 @@ io.on('connection', socket => {
             }
             else {
                 let data = readOneGame(filePath, numRoom)
-                const checkTurn = (socket.id === data.players[0].socketId && isTurnX(filePath, numRoom)
-                    || socket.id === data.players[1].socketId && !isTurnX(filePath, numRoom))
-                    && data.players[1].socketId !== "";
+                const checkTurn = isValidQueue(filePath, numRoom, socket.id)
                 result = { checkTurn };
                 if (checkTurn) {
                     data.gameMoves[index] = (data.players[0].socketId === socket.id ? 'X' : 'O')

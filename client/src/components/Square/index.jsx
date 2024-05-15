@@ -10,7 +10,6 @@ export default function Square({ index, setSymbols, symbols, setPlayAgain }) {
   const socket = useSocket()
   const [isMouseDown, setIsMouseDown] = useState(false);
   const { setText, setOpen, player } = useContext(DataContext);
-  const [isMove, setIsMove] = useState(0);
 
   const updated = () => {
     socket.on('updated', ({ gameMoves, win, checkTurn }) => {
@@ -29,13 +28,12 @@ export default function Square({ index, setSymbols, symbols, setPlayAgain }) {
 
   useEffect(() => {
     updated();
-  }, [isMove])
+  }, [symbols])
 
   const fetchData = async () => {
     try {
       socket.emit('updateData', { index, socketId: player.socketId, numRoom: player.roomId });
       updated();
-      setIsMove(prev => prev++)
     } catch (error) {
       console.error("Error fetching data: ", error?.response);
     }
