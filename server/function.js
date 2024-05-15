@@ -14,7 +14,6 @@ function checkWin(filePath, id) {
     let data = readOneGame(filePath, id);
     let { gameMoves, step } = data;
 
-
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (gameMoves[a] === 'X' && gameMoves[b] === 'X' && gameMoves[c] === 'X') {
@@ -38,4 +37,19 @@ const isValidQueue = (path, numRoom, socketId) => {
         && game.players[1].socketId !== "";
 }
 
-module.exports = { checkWin, isTurnX, isValidQueue };
+
+const isValidJoin = (path, numRoom, socketId) => {
+    let game = readOneGame(path, numRoom);
+    return game.players[1].socketId === ""
+        || socketId === game.players[0].socketId
+        || socketId === game.players[1].socketId
+}
+
+const newGame = (path, numRoom) => {
+    const newGame = ["", "", "", "", "", "", "", "", ""];
+    const gameMoves = updateData(path, numRoom, 'gameMoves', newGame);
+    const step = updateData(path, numRoom, "step", 0);
+    return { gameMoves, step };
+}
+
+module.exports = { checkWin, isTurnX, isValidQueue, isValidJoin, newGame };

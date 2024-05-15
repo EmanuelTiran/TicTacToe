@@ -15,17 +15,41 @@ export default function Board() {
   const backToWelcome = async () => {
     // navigate("chooseplayer");
   }
-  const newGame = async () => {
-    try {
 
-      const updatedData = await axiosReq({ method: 'post', url: `newGame/45` });
-      console.log(updatedData);
-      setSymbols(updatedData.gameMoves);
-      setPlayAgain(false)
+  const updatedGame = () => {
+    socket.on('updatedGame', ({ gameMoves, win }) => {
+        if (win) {
+          setPlayAgain(true)
+          setSymbols(gameMoves);
+          setOpen(true)
+          setText(win)
+        } else {
+          setSymbols(gameMoves);
+        }
+      })
+  }
+
+  // useEffect(() => {
+  //   updated();
+  // }, [symbols])
+
+  const newGame = async () => {
+
+    try {
+      
     } catch (error) {
-      console.log(error);
-      console.error("Error fetching data: ", error?.response);
+      
     }
+    // try {
+
+    //   const updatedData = await axiosReq({ method: 'post', url: `newGame/45` });
+    //   console.log(updatedData);
+    //   setSymbols(updatedData.gameMoves);
+    //   setPlayAgain(false)
+    // } catch (error) {
+    //   console.log(error);
+    //   console.error("Error fetching data: ", error?.response);
+    // }
   }
   return (<div className={style.boardGame}>
     <div>

@@ -12,8 +12,7 @@ export default function Square({ index, setSymbols, symbols, setPlayAgain }) {
   const { setText, setOpen, player } = useContext(DataContext);
 
   const updated = () => {
-    socket.on('updated', ({ gameMoves, win, checkTurn }) => {
-      if (checkTurn === undefined) {
+    socket.on('updated', ({ gameMoves, win }) => {
         if (win) {
           setPlayAgain(true)
           setSymbols(gameMoves);
@@ -22,8 +21,7 @@ export default function Square({ index, setSymbols, symbols, setPlayAgain }) {
         } else {
           setSymbols(gameMoves);
         }
-      }
-    })
+      })
   }
 
   useEffect(() => {

@@ -4,7 +4,7 @@ const express = require('express'),
     { Server } = require("socket.io")
 cors = require("cors");
 
-const { checkWin, isTurnX, isValidQueue } = require('./function');
+const { checkWin, isValidQueue, isValidJoin, newGame } = require('./function');
 const { readOneGame, updateData, createGame, newRoomId, roomIds } = require('./Db/controller');
 const filePath = './DB/gameData.json';
 
@@ -29,22 +29,21 @@ io.on('connection', socket => {
 
     socket.on('joinGame', (numRoom) => {
         try {
-            const checkRoom = roomIds(filePath).includes(numRoom.toString());
-            let checkJoin;
-            if (checkRoom) {
-                let data = readOneGame(filePath, numRoom)
-                checkJoin = data.players[1].socketId === ""
-                    || socket.id === data.players[0].socketId
-                    || socket.id === data.players[1].socketId
-                if (checkJoin) {
-                    socket.join(numRoom)
-                    if (data.players[0].socketId !== socket.id) {
-                        updateData(filePath, numRoom, "socketId", socket.id, 1)
-                    }
-                }
 
+            if (!roomIds(filePath).includes(numRoom.toString())) {
+                throw new Error('The room does not exist');
             }
-            socket.emit('checkRoom', { flag: checkRoom && checkJoin, roomId: numRoom, socketId: socket.id })
+
+            let checkJoin = isValidJoin(filePath, numRoom, socket.id);
+            if (checkJoin) {
+                let data = readOneGame(filePath, numRoom)
+                socket.join(numRoom)
+                if (data.players[0].socketId !== socket.id) {
+                    updateData(filePath, numRoom, "socketId", socket.id, 1)
+                }
+            }
+
+            socket.emit('checkRoom', { flag: checkJoin, roomId: numRoom, socketId: socket.id })
         } catch (error) {
             console.error(error);
             socket.emit('error', { message: error.message });
@@ -56,25 +55,21 @@ io.on('connection', socket => {
             let result;
             let win = checkWin(filePath, numRoom);
             if (win) {
-                const updatedData = readOneGame(filePath, numRoom);
-                const { step, gameMoves } = updatedData;
+                const { step, gameMoves } = readOneGame(filePath, numRoom);
                 result = { win, step, gameMoves };
             }
             else {
-                let data = readOneGame(filePath, numRoom)
-                const checkTurn = isValidQueue(filePath, numRoom, socket.id)
-                result = { checkTurn };
-                if (checkTurn) {
-                    data.gameMoves[index] = (data.players[0].socketId === socket.id ? 'X' : 'O')
-                    result = updateData(filePath, numRoom, "gameMoves", data.gameMoves)
-                    updateData(filePath, numRoom, "step", ++data.step);
-                    data = readOneGame(filePath, numRoom)
-                    win = checkWin(filePath, numRoom);
-                    if (win) {
-                        const updatedData = readOneGame(filePath, numRoom);
-                        const { step, gameMoves } = updatedData;
-                        result = { win, step, gameMoves };
-                    }
+                if (!isValidQueue(filePath, numRoom, socket.id)) {
+                    throw new Error('Invalid turn or player not authorized.');
+                }
+                let { gameMoves, step, players } = readOneGame(filePath, numRoom)
+                gameMoves[index] = (players[0].socketId === socket.id ? 'X' : 'O')
+                result = updateData(filePath, numRoom, "gameMoves", gameMoves)
+                updateData(filePath, numRoom, "step", ++step);
+                let win = checkWin(filePath, numRoom);
+                if (win) {
+                    const { step, gameMoves } = readOneGame(filePath, numRoom);
+                    result = { win, step, gameMoves };
                 }
             }
             io.to(numRoom).emit('updated', result)
@@ -82,7 +77,16 @@ io.on('connection', socket => {
             console.error(error);
             socket.emit('error', { message: error.message });
         }
+    })
 
+    socket.on('newGame', (numRoom) => {
+        try {
+            const result = newGame(filePath, numRoom)
+            io.to(numRoom).emit('updated', result)
+        } catch (error) {
+            console.error(error);
+            socket.emit('error', { message: error.message });
+        }
     })
 
 })
@@ -101,55 +105,55 @@ app.get('/gameData/:id', (req, res) => {
 
 });
 
-// app.post('/newGame/:id', (req, res) => {
-//     const { id } = req.params;
-
-//     try {
-//         const newGame = ["", "", "", "", "", "", "", "", ""];
-//         const gameMoves = updateData(filePath, id, 'gameMoves', newGame);
-//         const step = updateData(filePath, id, "step", 0);
-//         res.send({ gameMoves, step });
-
-//     } catch (error) {
-//         console.log({ error });
-//         res.status(500).send('Internal Server Error');
-//     }
-
-// })
-
-app.post('/updateData/:id', (req, res) => {
-
+app.post('/newGame/:id', (req, res) => {
     const { id } = req.params;
-    const { name, index, value } = req.body || {};
 
     try {
-        let result = checkWin(filePath, id);
-        //update second name player
-        if (name) {
-            result = updateData(filePath, id, "players", name)
-        }
+        const newGame = ["", "", "", "", "", "", "", "", ""];
+        const gameMoves = updateData(filePath, id, 'gameMoves', newGame);
+        const step = updateData(filePath, id, "step", 0);
+        res.send({ gameMoves, step });
 
-        // update steps
-        if (!result && index !== undefined && index !== null && value) {
-            let data = readOneGame(filePath, id)
-            data.gameMoves[index] = value;
-            result = updateData(filePath, id, "gameMoves", data.gameMoves)
-            updateData(filePath, id, "step", ++data.step);
-
-            const win = checkWin(filePath, id);
-            if (win) {
-                const updatedData = readOneGame(filePath, id);
-                const { step, gameMoves } = updatedData;
-                result = { win, step, gameMoves };
-            }
-        }
-        res.send(result).status(200);
     } catch (error) {
         console.log({ error });
         res.status(500).send('Internal Server Error');
     }
 
-});
+})
+
+// app.post('/updateData/:id', (req, res) => {
+
+//     const { id } = req.params;
+//     const { name, index, value } = req.body || {};
+
+//     try {
+//         let result = checkWin(filePath, id);
+//         //update second name player
+//         if (name) {
+//             result = updateData(filePath, id, "players", name)
+//         }
+
+//         // update steps
+//         if (!result && index !== undefined && index !== null && value) {
+//             let data = readOneGame(filePath, id)
+//             data.gameMoves[index] = value;
+//             result = updateData(filePath, id, "gameMoves", data.gameMoves)
+//             updateData(filePath, id, "step", ++data.step);
+
+//             const win = checkWin(filePath, id);
+//             if (win) {
+//                 const updatedData = readOneGame(filePath, id);
+//                 const { step, gameMoves } = updatedData;
+//                 result = { win, step, gameMoves };
+//             }
+//         }
+//         res.send(result).status(200);
+//     } catch (error) {
+//         console.log({ error });
+//         res.status(500).send('Internal Server Error');
+//     }
+
+// });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
