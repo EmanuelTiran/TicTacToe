@@ -47,8 +47,8 @@ const isValidJoin = (path, numRoom, socketId) => {
 
 const newGame = (path, numRoom) => {
     const newGame = ["", "", "", "", "", "", "", "", ""];
-    updateData(path, numRoom.numRoom, "step", 0);
-    const gameMoves = updateData(path, numRoom.numRoom, 'gameMoves', newGame);
+    updateData(path, numRoom, "step", 0);
+    const gameMoves = updateData(path, numRoom, 'gameMoves', newGame);
     return gameMoves;
 }
 

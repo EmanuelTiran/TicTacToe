@@ -83,6 +83,7 @@ io.on('connection', socket => {
         try {
             const result = newGame(filePath, numRoom);
             io.to(numRoom).emit('updatedNew', result);
+            io.emit('updatedNew', result);
         } catch (error) {
             console.error(error);
             socket.emit('error', { message: error.message });
