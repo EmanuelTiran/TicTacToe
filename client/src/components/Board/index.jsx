@@ -1,13 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 import DataContext from "../DataContext";
 
-
 import style from "./style.module.css"
 import Square from '../Square'
 import Btn from '../Btn';
 import useSocket from '../../socket';
 
-import { axiosReq } from '../apiReq'
 // import { useNavigate } from "react-router-dom";
 
 export default function Board() {
@@ -19,7 +17,6 @@ export default function Board() {
 
   // const navigate = useNavigate();
 
-  const players = Array(9).fill(null);
   const backToWelcome = async () => {
     // navigate("chooseplayer");
   }
@@ -28,15 +25,13 @@ export default function Board() {
     socket.on('updatedNew', (result) => console.log('result', result));
 
     socket.on('updatedNew',console.log('result'))
+
     socket.on('updatedNew', ({gameMoves}) => {
       console.log('object')
 
-        // if (win) {
         //   setSymbols(gameMoves);
         //   setPlayAgain(false)
-        // } else {
-        //   setSymbols(gameMoves);
-        // }
+
       })
   }
 
@@ -52,16 +47,7 @@ export default function Board() {
       console.log(error);
       console.error("Error fetching data: ", error?.response);
     }
-    // try {
 
-    //   const updatedData = await axiosReq({ method: 'post', url: `newGame/45` });
-    //   console.log(updatedData);
-    //   setSymbols(updatedData.gameMoves);
-    //   setPlayAgain(false)
-    // } catch (error) {
-    //   console.log(error);
-    //   console.error("Error fetching data: ", error?.response);
-    // }
   }
   return (<div className={style.boardGame}>
     <div>
