@@ -7,9 +7,9 @@ import useSocket from '../../socket';
 import DataContext from '../DataContext';
 
 
-
 export default function JoinGame() {
-    const { setPlayer } = useContext(DataContext);
+    const { setText, setOpen,setPlayer } = useContext(DataContext);
+
 
     const [inputValue, setInputValue] = useState('');
     const navigate = useNavigate();
@@ -18,13 +18,21 @@ export default function JoinGame() {
 
     const handleJoinClick = () => {
         socket.emit('joinGame', inputValue);
-        socket.on('checkRoom', flag => {
-            flag ? navigate('/board') : alert("roomm is not avaiable")
+        socket.on('checkRoom', ({ flag, roomId, socketId }) => {
+            if (flag) {
+                navigate('/board')
+                setPlayer(prev => ({ ...prev, roomId, socketId }));
+
+            }
+            else alert("roomm is not avaiable, or you are not authorized")
         })
     };
     const handleCreateGame = () => {
         socket.emit('createGame')
         socket.on('numRoom', ({ roomId, socketId }) => {
+            setOpen(true)
+            const text = <p>Your game number is <br/>{roomId}<br/> Save the number to add a friend</p>
+            setText(text)     
             setPlayer(prev => ({ ...prev, roomId, socketId }));
         })
     };
