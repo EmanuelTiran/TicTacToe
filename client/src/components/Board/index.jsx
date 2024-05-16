@@ -20,9 +20,7 @@ export default function Board() {
     // navigate("chooseplayer");
   };
 
-
   const updatedGame = ({ gameMoves }) => {
-    console.log("object");
     setSymbols(gameMoves);
     setPlayAgain(false);
   };
@@ -42,6 +40,7 @@ export default function Board() {
       console.error("Error fetching data: ", error?.response);
     }
   };
+
   return (
     <div className={style.boardGame}>
       <div>
